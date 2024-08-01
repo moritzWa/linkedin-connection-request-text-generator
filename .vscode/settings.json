@@ -1,0 +1,11 @@
+{
+    "editor.insertSpaces": true,
+    "editor.tabSize": 4,
+    "[javascript]": {
+        "editor.formatOnSave": true,
+        "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+    "files.eol": "\n",
+    "cSpell.enableFiletypes": ["md", "js"],
+    "cSpell.ignoreWords": ["Linkedin"]
+}
