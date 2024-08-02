@@ -16,16 +16,17 @@
         </div>
         <div class="fullCenter">
             <label for="connectionTemplate">Connection request template:</label>
-            <input type="text" id="connectionTemplate" placeholder="Hi {{first_name}}, I'd love to connect" />
+            <textarea id="connectionTemplate" placeholder="Hi {{first_name}}, I'd love to connect" rows="4" cols="50"></textarea>
 
             <button id="saveTemplate">Save Template</button>
 
-            <div class="template-docs">
+            <div class="template-docs alignLeft">
                 <h3>Available Fields:</h3>
                 <ul>
                     <li><code>{{first_name}}</code>: The first name of the person</li>
                     <li><code>{{current_title}}</code>: The current job title of the person</li>
                     <li><code>{{current_company}}</code>: The current company of the person</li>
+                    <li><code>{{a_an}}</code>: The correct indefinite article ("a" or "an")</li>
                 </ul>
             </div>
         </div>
@@ -50,10 +51,20 @@
             </div>
         </div>
         <div class="fullCenter bottomButtonsWrapper">
-            <a rel="noopener" class="bottomButton" href="https://github.com/joshuatz/linkedin-to-jsonresume" target="_blank" title="Info about the extension. Takes you to Github page."
+            <a
+                rel="noopener"
+                class="bottomButton"
+                href="https://github.com/moritzWa/linkedin-connection-request-text-generator"
+                target="_blank"
+                title="Info about the extension. Takes you to Github page."
                 ><div>Info</div></a
             >
-            <a rel="noopener" class="bottomButton" href="https://github.com/joshuatz/linkedin-to-jsonresume/issues/new" target="_blank" title="Report an issue or request a feature."
+            <a
+                rel="noopener"
+                class="bottomButton"
+                href="https://github.com/moritzWa/linkedin-connection-request-text-generator/issues/new"
+                target="_blank"
+                title="Report an issue or request a feature."
                 ><div>Report Issue</div></a
             >
         </div>

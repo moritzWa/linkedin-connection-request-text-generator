@@ -2011,12 +2011,23 @@ window.LinkedinToResumeJson = (() => {
         });
     };
 
+    /**
+     * Simple formatting for Voyager URLs - macro support, etc.
+     * @param {string} word
+     * @returns {string} indefiniteArticle
+     */
+    function getIndefiniteArticle(word) {
+        const vowels = ['a', 'e', 'i', 'o', 'u'];
+        return vowels.includes(word[0].toLowerCase()) ? 'an' : 'a';
+    }
+
     LinkedinToResumeJson.prototype.fillConnectionTemplate = async function fillConnectionTemplate() {
         const rawJson = await this.parseAndGetRawJson('stable');
         const firstName = rawJson.basics.name.split(' ')[0];
-        const currentTitle = rawJson.work[0]?.position || '';
+        const currentTitle = rawJson.work[0]?.position.toLowerCase() || '';
         // @ts-ignore
         const currentCompany = rawJson.work[0]?.name || '';
+        const article = getIndefiniteArticle(currentTitle);
 
         return new Promise((resolve) => {
             chrome.storage.sync.get(['connectionTemplate'], (result) => {
@@ -2024,6 +2035,7 @@ window.LinkedinToResumeJson = (() => {
                 template = template.replace('{{first_name}}', firstName);
                 template = template.replace('{{current_title}}', currentTitle);
                 template = template.replace('{{current_company}}', currentCompany);
+                template = template.replace('{{a_an}}', article);
                 resolve(template);
             });
         });
