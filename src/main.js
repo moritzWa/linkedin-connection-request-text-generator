@@ -2014,12 +2014,17 @@ window.LinkedinToResumeJson = (() => {
     LinkedinToResumeJson.prototype.fillConnectionTemplate = async function fillConnectionTemplate() {
         const rawJson = await this.parseAndGetRawJson('stable');
         const firstName = rawJson.basics.name.split(' ')[0];
+        const currentTitle = rawJson.work[0]?.position || '';
+        // @ts-ignore
+        const currentCompany = rawJson.work[0]?.name || '';
 
         return new Promise((resolve) => {
             chrome.storage.sync.get(['connectionTemplate'], (result) => {
                 let template = result.connectionTemplate || "Hi {{first_name}}, I'd love to connect";
-                const filledTemplate = template.replace('{{first_name}}', firstName);
-                resolve(filledTemplate);
+                template = template.replace('{{first_name}}', firstName);
+                template = template.replace('{{current_title}}', currentTitle);
+                template = template.replace('{{current_company}}', currentCompany);
+                resolve(template);
             });
         });
     };

@@ -1,7 +1,7 @@
 {
-    "name": "linkedin-to-json-resume-exporter",
+    "name": "linkedin-connection-request-text-generator",
     "version": "3.2.3",
-    "description": "Browser tool to grab details from your open LinkedIn profile page and export to JSON Resume Schema",
+    "description": "Browser tool to generate connection request text for LinkedIn",
     "private": true,
     "main": "src/main.js",
     "scripts": {
