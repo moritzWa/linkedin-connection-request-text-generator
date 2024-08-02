@@ -1,6 +1,6 @@
 {
-    "name": "JSON Resume Exporter",
-    "description": "Export a profile page to JSON Resume",
+    "name": "linkedin-connection-request-text-generator",
+    "description": "Generate connection request text for LinkedIn",
     "manifest_version": 2,
     "icons": {
         "16": "icon-16.png",
@@ -14,9 +14,14 @@
         "scripts": ["background.js"],
         "persistent": false
     },
-    "permissions": [
-        "declarativeContent",
-        "activeTab",
-        "storage"
-    ]
+    "commands": {
+        "fill-connection-template": {
+            "suggested_key": {
+                "default": "Shift+Ctrl+E",
+                "mac": "Shift+Command+E"
+            },
+            "description": "Fill connection template"
+        }
+    },
+    "permissions": ["declarativeContent", "activeTab", "storage", "commands", "clipboardWrite"]
 }

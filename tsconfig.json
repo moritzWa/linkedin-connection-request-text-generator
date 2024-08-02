@@ -1,12 +1,5 @@
 {
-    "exclude": [
-        "node_modules",
-        "build",
-        "build-bookmarklet",
-        "build-browserext",
-        "webstore-zips",
-        "scratch"
-    ],
+    "exclude": ["node_modules", "build", "build-bookmarklet", "build-browserext", "webstore-zips", "scratch"],
     "compilerOptions": {
         "baseUrl": ".",
         "checkJs": true,

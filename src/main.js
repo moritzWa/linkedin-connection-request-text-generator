@@ -7,20 +7,20 @@
 
 // @ts-ignore
 import VCardsJS from '@dan/vcards';
-import { resumeJsonTemplateLegacy, resumeJsonTemplateStable, resumeJsonTemplateBetaPartial } from './templates';
 import { liSchemaKeys as _liSchemaKeys, liTypeMappings as _liTypeMappings } from './schema';
+import { resumeJsonTemplateBetaPartial, resumeJsonTemplateLegacy, resumeJsonTemplateStable } from './templates';
 import {
+    companyLiPageFromCompanyUrn,
     getCookie,
     lazyCopy,
     liDateToJSDate,
     noNullOrUndef,
+    parseAndAttachResumeDates,
     parseStartDate,
     promptDownload,
-    setQueryParams,
-    urlToBase64,
     remapNestedLocale,
-    companyLiPageFromCompanyUrn,
-    parseAndAttachResumeDates
+    setQueryParams,
+    urlToBase64
 } from './utilities';
 
 // ==Bookmarklet==
@@ -2010,6 +2010,37 @@ window.LinkedinToResumeJson = (() => {
             }
         });
     };
+
+    LinkedinToResumeJson.prototype.fillConnectionTemplate = async function fillConnectionTemplate() {
+        const rawJson = await this.parseAndGetRawJson('stable');
+        const firstName = rawJson.basics.name.split(' ')[0];
+
+        return new Promise((resolve) => {
+            chrome.storage.sync.get(['connectionTemplate'], (result) => {
+                let template = result.connectionTemplate || "Hi {{first_name}}, I'd love to connect";
+                const filledTemplate = template.replace('{{first_name}}', firstName);
+                resolve(filledTemplate);
+            });
+        });
+    };
+
+    let liToJrInstance = new LinkedinToResumeJson();
+
+    chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+        if (request.action === 'fillConnectionTemplate') {
+            liToJrInstance.fillConnectionTemplate().then((filledTemplate) => {
+                // Copy the filled template to the clipboard
+                navigator.clipboard
+                    .writeText(filledTemplate)
+                    .then(() => {
+                        console.log('Template copied to clipboard');
+                    })
+                    .catch((err) => {
+                        console.error('Failed to copy template to clipboard', err);
+                    });
+            });
+        }
+    });
 
     return LinkedinToResumeJson;
 })();

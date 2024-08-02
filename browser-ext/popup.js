@@ -7,8 +7,27 @@
 const extensionId = chrome.runtime.id;
 
 const STORAGE_KEYS = {
-    schemaVersion: 'schemaVersion'
+    schemaVersion: 'schemaVersion',
+    connectionTemplate: 'connectionTemplate'
 };
+
+// template storage logic
+document.getElementById('saveTemplate').addEventListener('click', () => {
+    const template = /** @type {HTMLInputElement} */ (document.getElementById(STORAGE_KEYS.connectionTemplate)).value;
+    chrome.storage.sync.set({ [STORAGE_KEYS.connectionTemplate]: template }, () => {
+        console.log('Template saved');
+    });
+});
+
+chrome.storage.sync.get([STORAGE_KEYS.connectionTemplate], (result) => {
+    if (result[STORAGE_KEYS.connectionTemplate]) {
+        const inputElement = /** @type {HTMLInputElement} */ (document.getElementById(STORAGE_KEYS.connectionTemplate));
+        if (inputElement) {
+            inputElement.value = result[STORAGE_KEYS.connectionTemplate];
+        }
+    }
+});
+
 const SPEC_SELECT = /** @type {HTMLSelectElement} */ (document.getElementById('specSelect'));
 /** @type {SchemaVersion[]} */
 const SPEC_OPTIONS = ['legacy', 'stable', 'beta'];
