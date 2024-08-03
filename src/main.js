@@ -2139,13 +2139,32 @@ window.LinkedinToResumeJson = (() => {
 
     injectModal();
 
-    function clickConnectButton() {
-        const connectButton = document.querySelector('button[aria-label^="Invite"][aria-label$="to connect"]');
-        if (connectButton) {
+    async function clickConnectButton() {
+        // First, try to find and click the "More" button
+        const moreButton = document.querySelector('button[aria-label="More actions"]');
+        if (moreButton) {
             // @ts-ignore
-            connectButton.click();
+            moreButton.click();
+            // Wait for the dropdown to appear
+            await new Promise((resolve) => setTimeout(resolve, 500));
+            const connectOption = document.querySelector('div[aria-label^="Invite"][aria-label$="to connect"]');
+            if (connectOption) {
+                // @ts-ignore
+                connectOption.click();
+                console.log('clicked connect option in more dropdown');
+                return true;
+            }
+        }
+
+        // If "Connect" option is not in the "More" menu, try the main "Connect" button
+        const mainConnectButton = document.querySelector('button[aria-label^="Invite"][aria-label$="to connect"]');
+        if (mainConnectButton) {
+            // @ts-ignore
+            mainConnectButton.click();
+            console.log('clicked main connect button');
             return true;
         }
+
         return false;
     }
 
@@ -2186,8 +2205,8 @@ window.LinkedinToResumeJson = (() => {
      */
     chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
         if (request.action === 'fillConnectionTemplate') {
-            liToJrInstance.fillConnectionTemplate().then((filledTemplate) => {
-                if (clickConnectButton()) {
+            liToJrInstance.fillConnectionTemplate().then(async (filledTemplate) => {
+                if (await clickConnectButton()) {
                     // Wait for the "Add a note" button to appear
                     setTimeout(() => {
                         if (clickAddNoteButton()) {
