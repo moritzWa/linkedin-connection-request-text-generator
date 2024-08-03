@@ -449,7 +449,6 @@ window.LinkedinToResumeJson = (() => {
                 // To make this easier to work with lookup, we'll unpack the
                 // profile view nested object BACK into the root (ToC), so
                 // that subsequent lookups can be performed by key instead of type | recipe
-                // This is critical for lookups that require precise ordering, preserved by ToCs
                 /** @type {LiResponse} */
                 const hoistedRes = {
                     data: {
@@ -2021,25 +2020,121 @@ window.LinkedinToResumeJson = (() => {
         return vowels.includes(word[0].toLowerCase()) ? 'an' : 'a';
     }
 
+    function showModal() {
+        return new Promise((resolve) => {
+            const modal = document.getElementById('inputModal');
+            const span = document.getElementsByClassName('close')[0];
+            const submitButton = document.getElementById('submitInput');
+            const input = document.getElementById('companyRelationship');
+
+            modal.style.display = 'block';
+            setTimeout(() => input.focus(), 0);
+
+            // @ts-ignore
+            span.onclick = function () {
+                modal.style.display = 'none';
+                resolve(null);
+            };
+
+            submitButton.onclick = function () {
+                // @ts-ignore
+                const input = document.getElementById('companyRelationship').value;
+                modal.style.display = 'none';
+                resolve(input);
+            };
+
+            window.onclick = function (event) {
+                if (event.target == modal) {
+                    modal.style.display = 'none';
+                    resolve(null);
+                }
+            };
+        });
+    }
+
     LinkedinToResumeJson.prototype.fillConnectionTemplate = async function fillConnectionTemplate() {
         const rawJson = await this.parseAndGetRawJson('stable');
         const firstName = rawJson.basics.name.split(' ')[0];
-        const currentTitle = rawJson.work[0]?.position.toLowerCase() || '';
+        const currentTitle = rawJson.work[0]?.position.toLocaleUpperCase() || '';
         // @ts-ignore
         const currentCompany = rawJson.work[0]?.name || '';
         const article = getIndefiniteArticle(currentTitle);
 
         return new Promise((resolve) => {
-            chrome.storage.sync.get(['connectionTemplate'], (result) => {
+            chrome.storage.sync.get(['connectionTemplate'], async (result) => {
                 let template = result.connectionTemplate || "Hi {{first_name}}, I'd love to connect";
+
+                // Only show the modal if the template contains {{company_relationship}}
+                let companyRelationship = '';
+                if (template.includes('{{company_relationship}}')) {
+                    companyRelationship = await showModal();
+                }
+
                 template = template.replace('{{first_name}}', firstName);
                 template = template.replace('{{current_title}}', currentTitle);
                 template = template.replace('{{current_company}}', currentCompany);
                 template = template.replace('{{a_an}}', article);
+                template = template.replace('{{company_relationship}}', companyRelationship);
                 resolve(template);
             });
         });
     };
+
+    function injectModal() {
+        const modalHtml = `
+            <div id="inputModal" class="modal">
+                <div class="modal-content">
+                    <span class="close">&times;</span>
+                    <label for="companyRelationship">Enter your relationship with the company:</label>
+                    <input type="text" id="companyRelationship" name="companyRelationship">
+                    <button id="submitInput">Submit</button>
+                </div>
+            </div>
+        `;
+        const modalCss = `
+            .modal {
+                display: none;
+                position: fixed;
+                z-index: 1000;
+                left: 0;
+                top: 0;
+                width: 100%;
+                height: 100%;
+                overflow: auto;
+                background-color: rgb(0,0,0);
+                background-color: rgba(0,0,0,0.4);
+            }
+            .modal-content {
+                background-color: #fefefe;
+                margin: 15% auto;
+                padding: 20px;
+                border: 1px solid #888;
+                width: 80%;
+            }
+            .close {
+                color: #aaa;
+                float: right;
+                font-size: 28px;
+                font-weight: bold;
+            }
+            .close:hover,
+            .close:focus {
+                color: black;
+                text-decoration: none;
+                cursor: pointer;
+            }
+        `;
+
+        const style = document.createElement('style');
+        style.innerHTML = modalCss;
+        document.head.appendChild(style);
+
+        const div = document.createElement('div');
+        div.innerHTML = modalHtml;
+        document.body.appendChild(div);
+    }
+
+    injectModal();
 
     let liToJrInstance = new LinkedinToResumeJson();
 
