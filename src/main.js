@@ -1792,7 +1792,7 @@ window.LinkedinToResumeJson = (() => {
                  * - vCard actually allows this in spec, but only in > v4 (RFC-6350): https://tools.ietf.org/html/rfc6350#:~:text=BDAY%3A--0415, https://tools.ietf.org/html/rfc6350#section-4.3.1
                  *       - Governed by ISO-8601, which allows truncated under ISO.8601.2000, such as `--MMDD`
                  *       - Example: `BDAY:--0415`
-                 * - Since the vCard library I'm using (many platforms) only support V3, I'll just exclude it from the vCard; including a partial date in v3 (violating the spec) will result in a corrupt card that will crash many programs
+                 * - Since the vCard library I'm using (many platforms) only supports V3, I'll just exclude it from the vCard; including a partial date in v3 (violating the spec) will result in a corrupt card that will crash many programs
                  */
                 console.warn(`Warning: User has a "partial" birthdate (year is omitted). This is not supported in vCard version 3 or under.`);
             } else {
@@ -2024,10 +2024,11 @@ window.LinkedinToResumeJson = (() => {
         return new Promise((resolve) => {
             const modal = document.getElementById('inputModal');
             const span = document.getElementsByClassName('close')[0];
-            const submitButton = document.getElementById('submitInput');
             const input = document.getElementById('companyRelationship');
 
             modal.style.display = 'block';
+
+            // Auto-focus the input field
             setTimeout(() => input.focus(), 0);
 
             // @ts-ignore
@@ -2036,12 +2037,15 @@ window.LinkedinToResumeJson = (() => {
                 resolve(null);
             };
 
-            submitButton.onclick = function () {
-                // @ts-ignore
-                const input = document.getElementById('companyRelationship').value;
-                modal.style.display = 'none';
-                resolve(input);
-            };
+            // Submit with Enter key
+            input.addEventListener('keyup', function (event) {
+                if (event.key === 'Enter') {
+                    // @ts-ignore
+                    const inputValue = input.value;
+                    modal.style.display = 'none';
+                    resolve(inputValue);
+                }
+            });
 
             window.onclick = function (event) {
                 if (event.target == modal) {
@@ -2086,8 +2090,7 @@ window.LinkedinToResumeJson = (() => {
                 <div class="modal-content">
                     <span class="close">&times;</span>
                     <label for="companyRelationship">Enter your relationship with the company:</label>
-                    <input type="text" id="companyRelationship" name="companyRelationship">
-                    <button id="submitInput">Submit</button>
+                    <input type="text" id="companyRelationship" name="companyRelationship" autofocus>
                 </div>
             </div>
         `;
@@ -2136,20 +2139,73 @@ window.LinkedinToResumeJson = (() => {
 
     injectModal();
 
+    function clickConnectButton() {
+        const connectButton = document.querySelector('button[aria-label^="Invite"][aria-label$="to connect"]');
+        if (connectButton) {
+            // @ts-ignore
+            connectButton.click();
+            return true;
+        }
+        return false;
+    }
+
+    function clickAddNoteButton() {
+        const addNoteButton = document.querySelector('button[aria-label="Add a note"]');
+        if (addNoteButton) {
+            // @ts-ignore
+            addNoteButton.click();
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * @param {string} note
+     * @returns {boolean}
+     */
+    function fillConnectionNote(note) {
+        const textarea = document.querySelector('textarea[name="message"]');
+        if (textarea) {
+            // @ts-ignore
+            textarea.value = note;
+            // Trigger input event to ensure LinkedIn's UI updates
+            const inputEvent = new Event('input', { bubbles: true });
+            textarea.dispatchEvent(inputEvent);
+            return true;
+        }
+        return false;
+    }
+
+    /** @type {LinkedinToResumeJson} */
     let liToJrInstance = new LinkedinToResumeJson();
 
+    /**
+     * @param {any} request
+     * @param {chrome.runtime.MessageSender} sender
+     * @param {function} sendResponse
+     */
     chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
         if (request.action === 'fillConnectionTemplate') {
             liToJrInstance.fillConnectionTemplate().then((filledTemplate) => {
-                // Copy the filled template to the clipboard
-                navigator.clipboard
-                    .writeText(filledTemplate)
-                    .then(() => {
-                        console.log('Template copied to clipboard');
-                    })
-                    .catch((err) => {
-                        console.error('Failed to copy template to clipboard', err);
-                    });
+                if (clickConnectButton()) {
+                    // Wait for the "Add a note" button to appear
+                    setTimeout(() => {
+                        if (clickAddNoteButton()) {
+                            // Wait for the textarea to appear
+                            setTimeout(() => {
+                                if (fillConnectionNote(filledTemplate)) {
+                                    console.log('Connection note filled successfully');
+                                } else {
+                                    console.error('Failed to fill connection note');
+                                }
+                            }, 500);
+                        } else {
+                            console.error('Failed to click "Add a note" button');
+                        }
+                    }, 500);
+                } else {
+                    console.error('Failed to click "Connect" button');
+                }
             });
         }
     });
