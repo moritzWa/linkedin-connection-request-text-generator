@@ -19,6 +19,13 @@ chrome.runtime.onInstalled.addListener(() => {
     });
 });
 
+// Inject content script when a LinkedIn page is loaded
+chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
+    if (changeInfo.status === 'complete' && tab.url.includes('linkedin.com')) {
+        chrome.tabs.executeScript(tabId, { file: 'main.js' });
+    }
+});
+
 chrome.commands.onCommand.addListener((command) => {
     if (command === 'fill-connection-template') {
         chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {

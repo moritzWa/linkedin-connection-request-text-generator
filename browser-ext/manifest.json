@@ -23,5 +23,11 @@
             "description": "Fill connection template"
         }
     },
-    "permissions": ["declarativeContent", "activeTab", "storage", "commands", "clipboardWrite"]
+    "permissions": ["declarativeContent", "activeTab", "storage", "commands", "clipboardWrite", "tabs"],
+    "content_scripts": [
+        {
+            "matches": ["*://*.linkedin.com/*"],
+            "js": ["main.js"]
+        }
+    ]
 }
