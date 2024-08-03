@@ -2059,7 +2059,7 @@ window.LinkedinToResumeJson = (() => {
     LinkedinToResumeJson.prototype.fillConnectionTemplate = async function fillConnectionTemplate() {
         const rawJson = await this.parseAndGetRawJson('stable');
         const firstName = rawJson.basics.name.split(' ')[0];
-        const currentTitle = rawJson.work[0]?.position.toLocaleUpperCase() || '';
+        const currentTitle = rawJson.work[0]?.position.toLowerCase() || '';
         // @ts-ignore
         const currentCompany = rawJson.work[0]?.name || '';
         const article = getIndefiniteArticle(currentTitle);
