@@ -2,6 +2,10 @@
 
 This extension helps you generate personalized LinkedIn connection requests on shorcut press.
 
+Demo:
+
+![2024-08-03 10 33 04](https://github.com/user-attachments/assets/80d13791-4c24-477f-bf9d-2a201dfaca55)
+
 ---
 
 ## Usage / Installation Options:
