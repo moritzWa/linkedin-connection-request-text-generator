@@ -2,6 +2,12 @@
 
 This extension helps you generate personalized LinkedIn connection requests on shorcut press.
 
+Current default shortcut: `Shift+Command(or Ctrl)+E`
+
+Demo:
+
+![2024-08-03 10 35 32](https://github.com/user-attachments/assets/b78af7ce-d68b-4cfa-a1ff-f7caf62170b0)
+
 ---
 
 ## Usage / Installation Options:
