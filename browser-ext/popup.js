@@ -8,22 +8,36 @@ const extensionId = chrome.runtime.id;
 
 const STORAGE_KEYS = {
     schemaVersion: 'schemaVersion',
-    connectionTemplate: 'connectionTemplate'
+    connectionTemplate: 'connectionTemplate',
+    targetCompany: 'targetCompany'
 };
 
 // template storage logic
 document.getElementById('saveTemplate').addEventListener('click', () => {
     const template = /** @type {HTMLInputElement} */ (document.getElementById(STORAGE_KEYS.connectionTemplate)).value;
-    chrome.storage.sync.set({ [STORAGE_KEYS.connectionTemplate]: template }, () => {
-        console.log('Template saved');
-    });
+    const targetCompany = /** @type {HTMLInputElement} */ (document.getElementById(STORAGE_KEYS.targetCompany)).value;
+    chrome.storage.sync.set(
+        {
+            [STORAGE_KEYS.connectionTemplate]: template,
+            [STORAGE_KEYS.targetCompany]: targetCompany
+        },
+        () => {
+            console.log('Template and target company saved');
+        }
+    );
 });
 
-chrome.storage.sync.get([STORAGE_KEYS.connectionTemplate], (result) => {
+chrome.storage.sync.get([STORAGE_KEYS.connectionTemplate, STORAGE_KEYS.targetCompany], (result) => {
     if (result[STORAGE_KEYS.connectionTemplate]) {
         const inputElement = /** @type {HTMLInputElement} */ (document.getElementById(STORAGE_KEYS.connectionTemplate));
         if (inputElement) {
             inputElement.value = result[STORAGE_KEYS.connectionTemplate];
+        }
+    }
+    if (result[STORAGE_KEYS.targetCompany]) {
+        const inputElement = /** @type {HTMLInputElement} */ (document.getElementById(STORAGE_KEYS.targetCompany));
+        if (inputElement) {
+            inputElement.value = result[STORAGE_KEYS.targetCompany];
         }
     }
 });

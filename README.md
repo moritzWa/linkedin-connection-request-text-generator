@@ -16,6 +16,24 @@ Demo:
     -   Feel free to install, use, and then immediately uninstall if you just need a single use.
     -   No data is collected.
 
+### Example Templates and Use Cases
+
+1. Operations leaders
+
+```
+Hi {{first_name}}, noticed our mutual connections and that you're {{a_an}} {{current_title}} at {{current_company}} ({{company_relationship}}). My co-founder and I are developing solutions specifically for operations leaders. Could we interview you about your challenges in a brief 10m call soon?
+```
+
+2. Recruiting platform member
+
+```
+
+```
+
+3. Recruiting professionals
+
+Hi Shirley, noticed you are a recruiting consultant and work w Sierra. My friend Andrew (Andrew Duca, also 2nd time founder) and I are currently researching problems of recruiters (in search of a startup idea). We'd love to interview you about your experience and problems on a brief 5-10m call
+
 ## Troubleshooting
 
 When in doubt, refresh the profile page before using this tool.

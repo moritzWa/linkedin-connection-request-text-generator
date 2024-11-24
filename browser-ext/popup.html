@@ -17,7 +17,8 @@
         <div class="fullCenter">
             <label for="connectionTemplate">Connection request template:</label>
             <textarea id="connectionTemplate" placeholder="Hi {{first_name}}, I'd love to connect" rows="4" cols="50"></textarea>
-
+            <label for="targetCompany">Target Company:</label>
+            <input type="text" id="targetCompany" placeholder="Apple" />
             <button id="saveTemplate">Save Template</button>
 
             <div class="template-docs alignLeft">
@@ -27,11 +28,15 @@
                     <li><code>{{current_title}}</code>: The current job title of the person</li>
                     <li><code>{{current_company}}</code>: The current company of the person</li>
                     <li><code>{{a_an}}</code>: The correct indefinite article ("a" or "an")</li>
-                    <li><code>{{company_relationship}}</code>: Your relationship with the company</li>
+                    <li><code>{{custom_input}}</code>: Your custom input</li>
+                    <li><code>{{custom_input_first_word}}</code>: First word of your custom input</li>
+                    <li><code>{{target_company_title}}</code>: The title of the company</li>
+                    <li><code>{{target_company}}</code>: The name of the company</li>
                 </ul>
             </div>
         </div>
-        <div class="fullCenter">
+
+        <!-- <div class="fullCenter">
             <div class="langSelectWrapper">
                 <label>
                     Select export language:
@@ -50,7 +55,7 @@
                     <option value="beta">Currently even with stable (v1.0.0)</option>
                 </select>
             </div>
-        </div>
+        </div> -->
         <div class="fullCenter bottomButtonsWrapper">
             <a
                 rel="noopener"
@@ -69,7 +74,8 @@
                 ><div>Report Issue</div></a
             >
         </div>
-        <div class="fullCenter"><span>Version: </span><span id="versionDisplay">{version_string}</span></div>
+        <!-- <div class="fullCenter"><span>Version: </span><span id="versionDisplay">{version_string}</span></div> -->
+        <div class="fullCenter"><span>Version: </span><span id="versionDisplay">added fix</span></div>
         <script src="popup.js"></script>
     </body>
 </html>

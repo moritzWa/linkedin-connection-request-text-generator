@@ -2024,7 +2024,7 @@ window.LinkedinToResumeJson = (() => {
         return new Promise((resolve) => {
             const modal = document.getElementById('inputModal');
             const span = document.getElementsByClassName('close')[0];
-            const input = document.getElementById('companyRelationship');
+            const input = document.getElementById('customInput'); // Updated ID here
 
             modal.style.display = 'block';
 
@@ -2065,20 +2065,39 @@ window.LinkedinToResumeJson = (() => {
         const article = getIndefiniteArticle(currentTitle);
 
         return new Promise((resolve) => {
-            chrome.storage.sync.get(['connectionTemplate'], async (result) => {
+            chrome.storage.sync.get(['connectionTemplate', 'targetCompany'], async (result) => {
                 let template = result.connectionTemplate || "Hi {{first_name}}, I'd love to connect";
+                const targetCompany = result.targetCompany || '';
 
-                // Only show the modal if the template contains {{company_relationship}}
-                let companyRelationship = '';
-                if (template.includes('{{company_relationship}}')) {
-                    companyRelationship = await showModal();
+                // Only show the modal if the template contains {{custom_input}} or {{custom_input_first_word}}
+                let customInput = '';
+
+                if (template.includes('{{custom_input}}') || template.includes('{{custom_input_first_word}}')) {
+                    customInput = await showModal();
                 }
 
-                template = template.replace('{{first_name}}', firstName);
-                template = template.replace('{{current_title}}', currentTitle);
-                template = template.replace('{{current_company}}', currentCompany);
-                template = template.replace('{{a_an}}', article);
-                template = template.replace('{{company_relationship}}', companyRelationship);
+                let targetCompanyTitle = '';
+                if (targetCompany) {
+                    // Search for the target company in the work history
+                    // @ts-ignore
+                    const targetCompanyExperience = rawJson.work.find((job) => job.name.toLowerCase() === targetCompany.toLowerCase());
+                    if (targetCompanyExperience) {
+                        targetCompanyTitle = targetCompanyExperience.position;
+                    }
+                }
+
+                // const customInputFirstWord = customInput.split(' ')[0]; // Get first word
+
+                // Use replaceAll instead of replace to handle multiple occurrences
+                template = template.replaceAll('{{first_name}}', firstName);
+                template = template.replaceAll('{{current_title}}', currentTitle);
+                template = template.replaceAll('{{current_company}}', currentCompany);
+                template = template.replaceAll('{{a_an}}', article);
+                template = template.replaceAll('{{custom_input}}', customInput);
+                // template = template.replaceAll('{{custom_input_first_word}}', customInputFirstWord);
+                template = template.replaceAll('{{target_company}}', targetCompany);
+                template = template.replaceAll('{{target_company_title}}', targetCompanyTitle);
+
                 resolve(template);
             });
         });
@@ -2089,8 +2108,8 @@ window.LinkedinToResumeJson = (() => {
             <div id="inputModal" class="modal">
                 <div class="modal-content">
                     <span class="close">&times;</span>
-                    <label for="companyRelationship">Enter your relationship with the company:</label>
-                    <input type="text" id="companyRelationship" name="companyRelationship" autofocus>
+                    <label for="customInput">Enter custom text:</label>
+                    <input type="text" id="customInput" name="customInput" autofocus>
                 </div>
             </div>
         `;

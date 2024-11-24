@@ -1,6 +1,6 @@
 {
-    "name": "linkedin-connection-request-text-generator",
-    "description": "Generate connection request text for LinkedIn",
+    "name": "LinkedIn Connection Invitation Note Generator",
+    "description": "Generate connection invitation notes for LinkedIn",
     "manifest_version": 2,
     "icons": {
         "16": "icon-16.png",
