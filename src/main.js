@@ -2086,7 +2086,7 @@ window.LinkedinToResumeJson = (() => {
                     }
                 }
 
-                // const customInputFirstWord = customInput.split(' ')[0]; // Get first word
+                const customInputFirstWord = customInput.split(' ')[0]; // Get first word
 
                 // Use replaceAll instead of replace to handle multiple occurrences
                 template = template.replaceAll('{{first_name}}', firstName);
@@ -2094,7 +2094,7 @@ window.LinkedinToResumeJson = (() => {
                 template = template.replaceAll('{{current_company}}', currentCompany);
                 template = template.replaceAll('{{a_an}}', article);
                 template = template.replaceAll('{{custom_input}}', customInput);
-                // template = template.replaceAll('{{custom_input_first_word}}', customInputFirstWord);
+                template = template.replaceAll('{{custom_input_first_word}}', customInputFirstWord);
                 template = template.replaceAll('{{target_company}}', targetCompany);
                 template = template.replaceAll('{{target_company_title}}', targetCompanyTitle);
 
